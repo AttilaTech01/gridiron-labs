@@ -7,8 +7,6 @@ from sqlalchemy.sql import func
 
 from app.core.database import Base
 
-__all__ = ["User", "Player", "Roster", "Lineup"]
-
 class User(Base):
     __tablename__ = "users"
 
