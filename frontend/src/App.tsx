@@ -1,7 +1,20 @@
+import { useState } from "react";
+import Lineup from "@/pages/Lineup";
+import Players from "@/pages/Players";
+
+type Page = "players" | "lineup";
+
 export default function App() {
+  const [page, setPage] = useState<Page>("players");
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-green-400">Gridiron Labs</h1>
+    <div>
+      <nav>
+        <button onClick={() => setPage("players")}>Players</button>
+        <button onClick={() => setPage("lineup")}>Lineup</button>
+      </nav>
+      {page === "players" && <Players />}
+      {page === "lineup" && <Lineup />}
     </div>
   );
 }
