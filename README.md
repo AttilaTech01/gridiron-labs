@@ -1,168 +1,79 @@
 # Gridiron Labs
 
-A fantasy football companion app for **Power Users** and **Busy Managers**. Gridiron Labs translates complex NFL data into simple, actionable start/sit recommendations — a confidence grade in five seconds, five minutes of data if you want it.
+Gridiron Labs is a fantasy football decision-support application focused on helping users make better weekly lineup decisions.
 
-Users build their own roster directly in the app, set their weekly lineup, and let the engine do the rest.
+## Project Purpose
 
----
+The goal of Gridiron Labs is to provide clear, explainable fantasy football recommendations instead of black-box suggestions.
+
+The application should help users answer questions like:
+
+- Which player should I start this week?
+- How does one player compare to another?
+- Why did a player receive a better grade?
+- What roster or lineup decisions need attention?
+
+## Current MVP Scope
+
+The current MVP centers on a **Start/Sit Optimizer** that lets a user manage players, view a roster, and compare lineup options using a deterministic grading system. The project is structured as a modern full-stack application with a React/Vite/TypeScript frontend and a FastAPI backend backed by PostgreSQL and Redis.
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Frontend | Vite + React + TypeScript + Tailwind CSS + shadcn/ui |
-| Backend | FastAPI (Python) |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Auth | Clerk |
-| DB Migrations | Alembic |
+### Frontend
 
----
+- React
+- TypeScript
+- Vite
+- Component-based UI structure
+- Tailwind CSS + shadcn/ui
 
-## Prerequisites
+### Backend
 
-- Python 3.11+
-- Node.js 20+
-- Docker Desktop
+- FastAPI
+- Python
+- PostgreSQL
+- Redis
+- Alembic migrations
 
----
+### Development Context
 
-## Project Structure
+The application currently uses development-friendly assumptions, including mock grading logic and a development user context. These choices are appropriate for the MVP but should be revisited before production use.
 
-```
-gridiron-labs/
-├── frontend/         # Vite + React + TypeScript
-│   └── src/
-│       ├── components/
-│       ├── pages/
-│       ├── hooks/
-│       ├── store/
-│       ├── lib/
-│       └── types/
-├── backend/          # FastAPI + Python
-│   ├── app/
-│   │   ├── api/
-│   │   │   └── routes/
-│   │   ├── core/     # config, database, auth, cache
-│   │   ├── models.py
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   └── main.py
-│   ├── db/           # Alembic migrations
-│   ├── tests/
-│   └── requirements.txt
-└── docker-compose.yml
-```
+## Repository Documentation
 
----
+This repository includes a documentation and Copilot context pack designed to help both developers and AI coding assistants understand the project.
 
-## Getting Started
+### Root-Level Documentation
 
-### 1. Start the database and cache
+| File              | Description                                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| `PRODUCT.md`      | Explains the product vision, user goals, MVP scope, and future direction of Gridiron Labs.                   |
+| `ARCHITECTURE.md` | Describes the high-level system architecture, including frontend, backend, database, and service boundaries. |
+| `CONTRIBUTING.md` | Defines development conventions, coding expectations, branch workflow, and contribution guidelines.          |
+| `TESTING.md`      | Describes the recommended testing strategy for frontend, backend, API, and grading logic.                    |
 
-From the root `gridiron-labs/` folder:
+### `docs/` Directory
 
-```bash
-docker-compose up -d
-```
+| File                                 | Description                                                                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `docs/API.md`                        | Documents the current API structure, route responsibilities, and expected backend behavior.                        |
+| `docs/DATA_MODEL.md`                 | Describes the main data entities, relationships, and persistence model used by the application.                    |
+| `docs/GRIDIRON_GRADE_ENGINE.md`      | Explains the grading engine concept, current mock logic, expected evolution, and rules for future scoring changes. |
+| `docs/SETUP.md`                      | Provides local setup guidance for installing dependencies, configuring services, and running the project.          |
+| `docs/NEXT_STEPS.md`                 | Lists recommended next improvements and technical priorities for moving the MVP forward.                           |
+| `docs/HOW_TO_USE_PROJECT_CONTEXT.md` | Explains how to use the documentation pack with GitHub Copilot and VS Code.                                        |
 
-This starts PostgreSQL on port `5432` and Redis on port `6379`.
+### `.github/` Copilot Context Files
 
-### 2. Start the backend
+| File                              | Description                                                                                                                          |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `.github/copilot-instructions.md` | Provides persistent project instructions for GitHub Copilot so AI-generated code follows the project’s architecture and conventions. |
 
-```bash
-cd backend
-.\.venv\Scripts\Activate.ps1        # Windows
-# source .venv/bin/activate         # Mac/Linux
+### `.github/agents/` Directory
 
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload
-```
-
-Backend runs at: `http://localhost:8000`  
-Auto-generated API docs: `http://localhost:8000/docs`
-
-### 3. Start the frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs at: `http://localhost:5173`
-
----
-
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/gridiron
-REDIS_URL=redis://localhost:6379
-ENVIRONMENT=development
-CLERK_SECRET_KEY=
-```
-
-### Frontend (`frontend/.env.local`)
-
-```
-VITE_API_URL=http://localhost:8000
-VITE_CLERK_PUBLISHABLE_KEY=
-```
-
----
-
-## Database & Migrations (Alembic)
-
-All commands are run from the `backend/` folder with the virtual environment active.
-
-### Apply all pending migrations
-```bash
-python -m alembic upgrade head
-```
-
-### Generate a new migration after changing models
-```bash
-python -m alembic revision --autogenerate -m "describe your change"
-```
-Always run `upgrade head` after generating a migration to apply it.
-
-### Roll back one migration
-```bash
-python -m alembic downgrade -1
-```
-
-### Roll back everything (reset to empty database)
-```bash
-python -m alembic downgrade base
-```
-
-### Check current migration status
-```bash
-python -m alembic current
-```
-
-### View migration history
-```bash
-python -m alembic history
-```
-
----
-
-## Workflow: Adding or Changing a Model
-
-1. Edit `app/models.py`
-2. Generate the migration: `python -m alembic revision --autogenerate -m "what changed"`
-3. Review the generated file in `db/versions/`
-4. Apply it: `python -m alembic upgrade head`
-5. Verify in SQLTools or via a check script
-
----
-
-## Feature Roadmap
-
-- **Phase 1 (Current):** Start/Sit Optimizer — Gridiron Grade (0–100), Matchup Grade (Green/Yellow/Red), Chaos Score
-- **Phase 2:** Trade Architect — Monte Carlo simulations for playoff probability impact
-- **Phase 3:** Post-Game Autopsy — Expected vs actual points, buy-low candidates
+| File                                     | Description                                                                                                                    |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `.github/agents/implementation.agent.md` | Defines a implementation-focus agent that should apply small changes to the codebase.                                          |
+| `.github/agents/plan.agent.md`           | Defines a planning-focused Copilot agent that should analyze features and produce implementation plans before code is written. |
+| `.github/agents/tdd.agent.md`            | Defines a test-driven development agent that should write or update tests before implementing feature logic.                   |
+| `.github/agents/reviewer.agent.md`       | Defines a review-focused agent that checks changes against the architecture, conventions, and project goals.                   |
