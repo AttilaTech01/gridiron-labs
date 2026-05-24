@@ -1,17 +1,27 @@
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
-async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}/api/v1${path}`, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
+function buildQueryString(params: Record<string, string | undefined>) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) {
+      query.set(key, value);
+    }
   });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ detail: "Request failed" }));
-    throw new Error(error.detail ?? "Unknown error");
-  }
-
-  return res.json() as Promise<T>;
+  return query.toString() ? `?${query.toString()}` : "";
 }
 
-export default apiFetch;
+export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const url = `${BASE_URL}/api/v1${path}`;
+  const response = await fetch(url, init);
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || `Request failed with status ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export function buildApiPath(path: string, params: Record<string, string | undefined> = {}) {
+  return `${path}${buildQueryString(params)}`;
+}
