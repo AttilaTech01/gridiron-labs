@@ -9,7 +9,7 @@ The uploaded project includes backend testing dependencies:
 
 No backend or frontend test files are currently present.
 
-Frontend test tooling such as Vitest, React Testing Library, or Playwright is not currently configured in `package.json`.
+Frontend test tooling such as Vitest, Vue Testing Library, or Playwright is not currently configured in `package.json`.
 
 ## Testing priorities
 
@@ -97,7 +97,7 @@ Recommended approach:
 Frontend tests are not configured yet. When ready, consider:
 
 - Vitest
-- React Testing Library
+- Vue Testing Library or Vue Test Utils
 - MSW for API mocking
 - Playwright for end-to-end workflows
 
@@ -161,7 +161,6 @@ cd frontend
 npm install
 npm run dev
 npm run build
-npm run lint
 ```
 
 ### Backend

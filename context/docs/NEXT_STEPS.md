@@ -2,6 +2,15 @@
 
 This list is based on the current uploaded codebase.
 
+## Work In Progress
+
+Making sure the fundamentals of the app work:
+
+- User can scroll through the players pool;
+- User can add/remove players from his roster;
+- User can manage his lineup (start/bench his players);
+- UI/UX for those features is sharp and professional.
+
 ## Highest priority
 
 ### 1. Add tests for the Gridiron Grade engine
@@ -72,12 +81,12 @@ Current frontend defines slots, but backend accepts any string.
 Suggested backend enum:
 
 ```txt
-QB, RB1, RB2, WR1, WR2, FLEX, TE, BN
+QB, RB, WR, TE, FLEX, BN
 ```
 
-### 7. Add React Router
+### 7. Add Vue Router
 
-`react-router-dom` is installed, but navigation is local state in `App.tsx`.
+A frontend router is not currently used; navigation is managed locally in `App.vue`.
 
 Router becomes useful when adding:
 
@@ -140,6 +149,15 @@ Before implementing auth:
 - add Pydantic schemas;
 - add route tests against `DEV_USER_ID` behavior;
 - then replace user resolution and update tests.
+
+## Known technical debt
+
+- `backend/app/schemas/` exists but is empty.
+- `lineup.py` contains debug `print()` statements.
+- `DEV_USER_ID = 1` must be replaced when auth is implemented.
+- `players.py` computes mock grades per request instead of using real data.
+- database uniqueness constraints are missing for roster and lineup membership.
+- frontend navigation is local state, not Vue Router.
 
 ## Suggested implementation sequence
 

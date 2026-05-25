@@ -76,8 +76,7 @@ The current MVP is the **Start/Sit Optimizer**.
 
 ### Current MVP screens
 
-- **Players page:** search/filter players and manage roster membership.
-- **Lineup page:** assign each roster player to a slot and save the lineup.
+- **Control Center:** Dashboard which includes 3 columns: players pool, lineup board and roster/bench panel.
 
 ### Current MVP backend capabilities
 

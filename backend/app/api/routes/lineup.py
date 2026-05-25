@@ -23,8 +23,6 @@ async def get_lineup(db: AsyncSession = Depends(get_db)):
         select(Lineup).where(Lineup.user_id == DEV_USER_ID)
     )
     lineup = result.scalars().all()
-    print("result :", result)
-    print("lineup :", lineup)
     return lineup
 
 

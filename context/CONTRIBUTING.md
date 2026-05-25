@@ -12,34 +12,42 @@ The best contribution is not the most clever implementation. It is the one that 
 
 Read these files first:
 
-1. `PRODUCT.md`
-2. `ARCHITECTURE.md`
-3. `docs/API.md`
-4. `docs/DATA_MODEL.md`
-5. `docs/GRIDIRON_GRADE_ENGINE.md` when touching scores or football logic
-6. `TESTING.md` when adding or changing behavior
+- `README.md` for project overview and setup instructions.
+- `context/PRODUCT.md` for product goals, personas, MVP scope, and roadmap.
+- `context/ARCHITECTURE.md` for repo structure, data flow, current constraints, and layer rules.
+- `context/TESTING.md` for test strategy.
+- `context/docs/API.md` before changing routes or frontend API calls.
+- `context/docs/DATA_MODEL.md` before changing models or migrations.
+- `context/docs/GRIDIRON_GRADE_ENGINE.md` before changing scoring logic.
 
-## Branching and commits
+## Product rules
 
-Recommended branch names:
+- The current MVP is the Start/Sit Optimizer.
+- The product should give a clear five-second answer and allow deeper five-minute analysis.
+- Do not imply current grades are live real-data recommendations. They are currently deterministic mock grades.
+- Preserve the distinction between the Busy Manager view and Power User depth.
 
-```txt
-feature/<short-feature-name>
-fix/<short-bug-name>
-docs/<short-doc-name>
-refactor/<short-refactor-name>
-```
+## Current technical state
 
-Recommended commit style:
+- Frontend: Vite, Vue 3, TypeScript, Vuetify, TanStack Query.
+- Backend: FastAPI, async SQLAlchemy, Alembic, PostgreSQL, Redis dependency.
+- Current API prefix: `/api/v1`.
+- Auth is not implemented. Roster and lineup routes use `DEV_USER_ID = 1`.
+- The scoring engine lives in `backend/app/services/gridiron_grade.py`.
+- Mock scoring lives in `backend/app/services/mock_grades.py`.
+- There are currently no test files in the project.
 
-```txt
-Add lineup slot validation
-Fix roster duplicate handling
-Document grading engine assumptions
-Refactor player response schema
-```
+## Coding rules
 
-Keep commits scoped. Avoid mixing UI polish, API changes, and database migrations in the same commit unless they are part of one planned feature.
+- Keep changes small and focused.
+- Do not mix unrelated UI, backend, migration, and auth work in one change.
+- Do not move business logic into Vue components.
+- Keep server state in TanStack Query hooks.
+- Keep backend route handlers thin.
+- Prefer explicit Pydantic schemas for API request/response contracts.
+- Avoid returning raw ORM models from new endpoints.
+- Do not introduce a real data source by rewriting the grading engine; create a translator into `GradeInput`.
+- Never commit or expose real environment variable values.
 
 ## Backend conventions
 
@@ -66,7 +74,6 @@ Route handlers should:
 - call services when business logic grows beyond simple CRUD;
 - return explicit Pydantic response schemas;
 - raise `HTTPException` for known API errors;
-- avoid debug `print()` statements;
 - avoid returning raw ORM objects once response schemas exist.
 
 ### Service rules
@@ -87,7 +94,7 @@ When changing SQLAlchemy models:
 2. Generate an Alembic migration.
 3. Review the generated migration manually.
 4. Apply the migration locally.
-5. Update `docs/DATA_MODEL.md`.
+5. Update `context/docs/DATA_MODEL.md`.
 6. Add/update tests.
 
 Run from `backend/`:
@@ -115,20 +122,11 @@ Use the existing structure:
 ```txt
 frontend/src/
 ├── components/       # reusable UI components
-├── hooks/            # data-fetching hooks and reusable React hooks
+├── composables/      # data-fetching composables and reusable Vue composition helpers
 ├── lib/              # API client and utilities
-├── pages/            # route-level screens
+├── plugins/          # Vue plugin registration
 └── types/            # TypeScript contracts
 ```
-
-### State management
-
-Use this order of preference:
-
-1. Local component state for UI-only state.
-2. TanStack Query for server state.
-3. URL/search params when state should be linkable.
-4. Zustand only when state is truly global and not server-owned.
 
 ### API usage
 
@@ -142,7 +140,7 @@ Use this order of preference:
 - Keep pages focused on orchestration.
 - Extract repeated UI into components.
 - Prefer semantic names: `PlayerGradeCard`, `MatchupBadge`, `RosterTable`, `LineupSlotSelect`.
-- Keep football calculations out of React components.
+- Keep football calculations out of Vue components.
 - Display loading, error, empty, and success states deliberately.
 
 ## TypeScript style
@@ -196,28 +194,15 @@ When integrating real data:
 - document source assumptions;
 - build tests using fixed fixtures before connecting live data.
 
-## Review checklist
-
-Before merging a change, check:
-
-- Does this support the current MVP or roadmap?
-- Are affected docs updated?
-- Are API contracts clear?
-- Are database migrations reviewed?
-- Are tests added or updated where practical?
-- Does the frontend handle loading, error, and empty states?
-- Does the code avoid leaking secrets or env values?
-- Does this preserve the difference between mock grades and real grades?
-
 ## Documentation update rule
 
 Any change that alters product behavior, API shape, data model, or scoring logic should update at least one of:
 
-- `PRODUCT.md`
-- `ARCHITECTURE.md`
-- `TESTING.md`
-- `docs/API.md`
-- `docs/DATA_MODEL.md`
-- `docs/GRIDIRON_GRADE_ENGINE.md`
-- `docs/NEXT_STEPS.md`
-- `docs/SETUP.md`
+- `context/PRODUCT.md`
+- `context/ARCHITECTURE.md`
+- `context/TESTING.md`
+- `context/docs/API.md`
+- `context/docs/DATA_MODEL.md`
+- `context/docs/GRIDIRON_GRADE_ENGINE.md`
+- `context/docs/NEXT_STEPS.md`
+- `context/docs/SETUP.md`

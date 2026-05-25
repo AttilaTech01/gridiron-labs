@@ -41,10 +41,10 @@ Returns players excluding kickers.
 
 Query parameters:
 
-| Name | Type | Required | Description |
-|---|---:|---:|---|
-| `position` | string | No | Position filter. Current frontend uses `QB`, `RB`, `WR`, `TE`. Backend uppercases the value. |
-| `search` | string | No | Case-insensitive player name search. |
+| Name       |   Type | Required | Description                                                                                  |
+| ---------- | -----: | -------: | -------------------------------------------------------------------------------------------- |
+| `position` | string |       No | Position filter. Current frontend uses `QB`, `RB`, `WR`, `TE`. Backend uppercases the value. |
+| `search`   | string |       No | Case-insensitive player name search.                                                         |
 
 Example:
 
@@ -97,8 +97,8 @@ Adds a player to the dev user's roster.
 
 Path parameters:
 
-| Name | Type | Description |
-|---|---:|---|
+| Name        |    Type | Description                    |
+| ----------- | ------: | ------------------------------ |
 | `player_id` | integer | Database id from `players.id`. |
 
 Success response:
@@ -111,10 +111,10 @@ Success response:
 
 Known errors:
 
-| Status | Reason |
-|---:|---|
-| 404 | Player not found. |
-| 400 | Player already on roster. |
+| Status | Reason                    |
+| -----: | ------------------------- |
+|    404 | Player not found.         |
+|    400 | Player already on roster. |
 
 Note: the current frontend sends a JSON body `{ "playerId": number }`, but the backend only uses the path parameter.
 
@@ -132,9 +132,9 @@ Success response:
 
 Known errors:
 
-| Status | Reason |
-|---:|---|
-| 404 | Player not on roster. |
+| Status | Reason                |
+| -----: | --------------------- |
+|    404 | Player not on roster. |
 
 ## Lineup API
 
@@ -155,8 +155,6 @@ type LineupEntry = {
   is_starter: boolean;
 };
 ```
-
-Current implementation contains debug `print()` statements. Remove these before production.
 
 ### `POST /api/v1/lineup/set`
 
@@ -191,9 +189,9 @@ Success response:
 
 Known errors:
 
-| Status | Reason |
-|---:|---|
-| 400 | Submitted player is not on the user's roster. |
+| Status | Reason                                        |
+| -----: | --------------------------------------------- |
+|    400 | Submitted player is not on the user's roster. |
 
 Important behavior:
 

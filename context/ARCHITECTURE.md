@@ -4,7 +4,7 @@
 
 Gridiron Labs is a monorepo with:
 
-- a **frontend** built with Vite, React, TypeScript, Tailwind CSS, shadcn/ui-style components, and TanStack Query;
+- a **frontend** built with Vite, Vue 3, TypeScript, Vuetify, and TanStack Query;
 - a **backend** built with FastAPI, SQLAlchemy async sessions, Alembic migrations, PostgreSQL, and Redis;
 - a **database** with users, players, rosters, and lineups;
 - a **mock scoring service** that produces deterministic Gridiron Grade values until real football data is integrated.
@@ -15,10 +15,10 @@ Gridiron Labs is a monorepo with:
 gridiron-labs/
 ├── frontend/
 │   ├── src/
-│   │   ├── components/ui/      # Reusable UI primitives
-│   │   ├── hooks/              # React Query hooks
+│   │   ├── components/layout/  # Page and dashboard components
+│   │   ├── composables/        # Data-fetching composables and reusable Vue composition helpers
 │   │   ├── lib/                # API client and utilities
-│   │   ├── pages/              # Current screens
+│   │   ├── plugins/            # Vue plugin registration
 │   │   └── types/              # Frontend TypeScript contracts
 │   ├── package.json
 │   ├── vite.config.ts
@@ -43,7 +43,7 @@ gridiron-labs/
 
 ```mermaid
 flowchart LR
-  Browser[React app on localhost:5173]
+  Browser[Vue app on localhost:3000]
   API[FastAPI app on localhost:8000]
   DB[(PostgreSQL gridiron DB)]
   Redis[(Redis cache)]
@@ -61,48 +61,35 @@ flowchart LR
 ### Current stack
 
 - Vite
-- React
+- Vue 3
 - TypeScript
-- Tailwind CSS v4-style setup
-- shadcn/ui-style primitives
+- Vuetify
 - TanStack Query
-- React Router dependency is installed, but current navigation is local state in `App.tsx`
-- Zustand dependency is installed, but no store is currently used
+- No frontend router is used; current navigation is local app state.
+- No global store is currently used.
 
 ### Current screens
 
-#### `frontend/src/pages/Players.tsx`
+#### `frontend/src/components/layout/ControlCenterShell.vue`
 
 Responsibilities:
 
-- maintain local search and position filter state;
-- load players from `/players/`;
-- load roster from `/roster/`;
-- add/remove players from the roster;
-- render a basic table with grading fields.
+- orchestrate the player pool, active lineup board, and roster bench
+- manage search and position filter state
+- coordinate roster and lineup mutations with backend APIs
+- display player detail and assignment drawer UI
 
-Key hooks:
+Key composables:
 
 - `usePlayers(position, search)`
 - `useRoster()`
-- `useAddPlayer()`
-- `useRemovePlayer()`
-
-#### `frontend/src/pages/Lineup.tsx`
-
-Responsibilities:
-
-- load current roster;
-- load saved lineup;
-- initialize assignments by player id;
-- allow the user to choose slots;
-- save lineup entries to `/lineup/set`.
-
-Key hooks:
-
-- `useRoster()`
 - `useLineup()`
-- `useSetLineup()`
+
+#### Supporting layout components
+
+- `frontend/src/components/layout/PlayerPool.vue`
+- `frontend/src/components/layout/LineupBoard.vue`
+- `frontend/src/components/layout/RosterPanel.vue`
 
 ### API client
 
@@ -124,7 +111,7 @@ When adding frontend code:
 - define frontend contracts in `src/types/`;
 - keep API calls in `src/lib/api.ts` or feature-specific API helpers;
 - prefer reusable components for player cards, grade badges, matchup indicators, lineup slots, and empty/loading/error states;
-- avoid putting domain formulas directly in React components.
+- avoid putting domain formulas directly in Vue components.
 
 ## Backend architecture
 
@@ -183,8 +170,6 @@ Known frontend env keys:
 - `VITE_API_URL`
 - `VITE_CLERK_PUBLISHABLE_KEY` is documented in `README.md`, but the uploaded `.env.local` only shows `VITE_API_URL` as set.
 
-Never commit real secret values.
-
 ## Data model summary
 
 Current SQLAlchemy entities:
@@ -201,7 +186,7 @@ Relationships:
 - each roster entry points to one player;
 - each lineup entry points to one player.
 
-See `docs/DATA_MODEL.md` for details.
+See `context/docs/DATA_MODEL.md` for details.
 
 ## Scoring architecture
 
@@ -240,7 +225,7 @@ Current route files return ORM objects directly in some endpoints and use local 
 
 ### No global frontend routing yet
 
-`react-router-dom` is installed, but `App.tsx` currently uses local state for page switching.
+No frontend router is used; `App.vue` currently controls navigation through local state.
 
 ## Recommended next architectural improvements
 
@@ -248,24 +233,8 @@ Current route files return ORM objects directly in some endpoints and use local 
 2. Add backend tests for the grading engine.
 3. Add API integration tests for players, roster, and lineup.
 4. Replace direct ORM responses with explicit response schemas.
-5. Remove debug `print()` statements from `lineup.py`.
-6. Add basic frontend components for grade cards, matchup badges, and roster/player rows.
-7. Add React Router if the app grows beyond the current two-screen MVP.
-8. Implement Clerk auth and replace `DEV_USER_ID` with authenticated user resolution.
-9. Create a real data ingestion boundary that converts football data into `GradeInput`.
-10. Use Redis only when a real caching need exists, such as expensive simulations, live updates, or external API response caching.
-
-## Architecture rule for AI agents
-
-Before making large changes, an AI agent should identify which layer is affected:
-
-- product logic;
-- frontend presentation;
-- frontend server-state hooks;
-- API route contract;
-- backend domain/service logic;
-- database model/migration;
-- data ingestion;
-- authentication.
-
-Changes that cross more than two layers should start with an implementation plan.
+5. Add basic frontend components for grade cards, matchup badges, and roster/player rows.
+6. Add Vue Router if the app grows beyond the current single-page MVP.
+7. Implement Clerk auth and replace `DEV_USER_ID` with authenticated user resolution.
+8. Create a real data ingestion boundary that converts football data into `GradeInput`.
+9. Use Redis only when a real caching need exists, such as expensive simulations, live updates, or external API response caching.

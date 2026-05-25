@@ -131,7 +131,7 @@ npm run dev
 Frontend runs at:
 
 ```txt
-http://localhost:5173
+http://localhost:3000
 ```
 
 ## Frontend environment variables
