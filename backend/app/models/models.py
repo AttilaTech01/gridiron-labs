@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -28,7 +28,7 @@ class Player(Base):
     full_name: Mapped[str] = mapped_column(String, nullable=False)
     position: Mapped[str] = mapped_column(String, nullable=False)
     team: Mapped[str | None] = mapped_column(String, nullable=True)
-    status: Mapped[str] = mapped_column(String, default="active")
+    status: Mapped[str] = mapped_column(String, nullable=False, default="active")
 
     target_share: Mapped[float | None] = mapped_column(Float, nullable=True)
     season_target_share: Mapped[float | None] = mapped_column(Float, nullable=True)
@@ -39,6 +39,7 @@ class Player(Base):
 
 class Roster(Base):
     __tablename__ = "rosters"
+    __table_args__ = (UniqueConstraint("user_id", "player_id", name="uq_roster_user_player"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
@@ -50,12 +51,13 @@ class Roster(Base):
 
 class Lineup(Base):
     __tablename__ = "lineups"
+    __table_args__ = (UniqueConstraint("user_id", "player_id", name="uq_lineup_user_player"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     player_id: Mapped[int] = mapped_column(Integer, ForeignKey("players.id"), nullable=False)
     slot: Mapped[str | None] = mapped_column(String, nullable=True)
-    is_starter: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_starter: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     user: Mapped[User] = relationship("User", back_populates="lineup")
     player: Mapped[Player] = relationship("Player")

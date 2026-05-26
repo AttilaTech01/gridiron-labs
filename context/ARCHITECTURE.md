@@ -76,20 +76,15 @@ Responsibilities:
 
 - orchestrate the player pool, active lineup board, and roster bench
 - manage search and position filter state
-- coordinate roster and lineup mutations with backend APIs
-- display player detail and assignment drawer UI
+- display player details
 
 Key composables:
 
 - `usePlayers(position, search)`
-- `useRoster()`
-- `useLineup()`
 
 #### Supporting layout components
 
 - `frontend/src/components/layout/PlayerPool.vue`
-- `frontend/src/components/layout/LineupBoard.vue`
-- `frontend/src/components/layout/RosterPanel.vue`
 
 ### API client
 

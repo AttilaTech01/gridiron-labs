@@ -65,13 +65,13 @@ erDiagram
 
 Represents an application user.
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key. |
-| `clerk_id` | string | Unique external auth id. Auth is not wired yet. |
-| `email` | string | Unique. |
-| `username` | string/null | Optional display/user name. |
-| `created_at` | datetime | Defaults to current server time. |
+| Column       | Type        | Notes                                           |
+| ------------ | ----------- | ----------------------------------------------- |
+| `id`         | integer     | Primary key.                                    |
+| `clerk_id`   | string      | Unique external auth id. Auth is not wired yet. |
+| `email`      | string      | Unique.                                         |
+| `username`   | string/null | Optional display/user name.                     |
+| `created_at` | datetime    | Defaults to current server time.                |
 
 Current development assumption:
 
@@ -81,57 +81,50 @@ Current development assumption:
 
 Represents NFL players imported from Sleeper.
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key. |
-| `sleeper_id` | string | Unique Sleeper player id. |
-| `full_name` | string | Player name. |
-| `position` | string | Current skill positions include QB, RB, WR, TE, K in seed script; API excludes K. |
-| `team` | string/null | NFL team or null/free agent context. |
-| `status` | string | Defaults to active in the SQLAlchemy model; migration allows nullable. |
-| `target_share` | float/null | Reserved for real data. |
-| `season_target_share` | float/null | Reserved for real data. |
-| `gridiron_grade` | integer/null | Reserved; current API computes mock grade instead. |
-| `chaos_score` | integer/null | Reserved; current API computes mock score instead. |
-| `matchup_grade` | string/null | Reserved; current API computes mock grade instead. |
+| Column                | Type         | Notes                                                                             |
+| --------------------- | ------------ | --------------------------------------------------------------------------------- |
+| `id`                  | integer      | Primary key.                                                                      |
+| `sleeper_id`          | string       | Unique Sleeper player id.                                                         |
+| `full_name`           | string       | Player name.                                                                      |
+| `position`            | string       | Current skill positions include QB, RB, WR, TE, K in seed script; API excludes K. |
+| `team`                | string/null  | NFL team or null/free agent context.                                              |
+| `status`              | string       | Defaults to active in the SQLAlchemy model.                                       |
+| `target_share`        | float/null   | Reserved for real data.                                                           |
+| `season_target_share` | float/null   | Reserved for real data.                                                           |
+| `gridiron_grade`      | integer/null | Reserved; current API computes mock grade instead.                                |
+| `chaos_score`         | integer/null | Reserved; current API computes mock score instead.                                |
+| `matchup_grade`       | string/null  | Reserved; current API computes mock grade instead.                                |
 
 ## `rosters`
 
 Join table between user and player.
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key. |
-| `user_id` | integer | FK to `users.id`. |
+| Column      | Type    | Notes               |
+| ----------- | ------- | ------------------- |
+| `id`        | integer | Primary key.        |
+| `user_id`   | integer | FK to `users.id`.   |
 | `player_id` | integer | FK to `players.id`. |
 
-Current API prevents duplicate roster entries in code, but there is no database-level unique constraint in the initial migration.
-
-Recommended future constraint:
-
-```txt
-unique(user_id, player_id)
-```
+Unique constraint prevents duplicate roster entries for the same user.
 
 ## `lineups`
 
 Stores a user's current lineup assignments.
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | integer | Primary key. |
-| `user_id` | integer | FK to `users.id`. |
-| `player_id` | integer | FK to `players.id`. |
-| `slot` | string/null | Current frontend uses `QB`, `RB1`, `RB2`, `WR1`, `WR2`, `FLEX`, `TE`, `BN`. |
-| `is_starter` | boolean | True unless slot is `BN` in current frontend behavior. |
+| Column       | Type        | Notes                                                                       |
+| ------------ | ----------- | --------------------------------------------------------------------------- |
+| `id`         | integer     | Primary key.                                                                |
+| `user_id`    | integer     | FK to `users.id`.                                                           |
+| `player_id`  | integer     | FK to `players.id`.                                                         |
+| `slot`       | string/null | Current frontend uses `QB`, `RB1`, `RB2`, `WR1`, `WR2`, `FLEX`, `TE`, `BN`. |
+| `is_starter` | boolean     | True unless slot is `BN` in current frontend behavior.                      |
 
 Current API replaces the entire lineup on save.
+Unique constraint prevents duplicate lineup entries for the same user.
 
 Recommended future constraints:
 
-- unique `(user_id, player_id)` to prevent the same player appearing twice;
 - slot validation at the API/schema level;
-- optionally unique active starter slot per user for non-bench slots.
 
 ## Current data seed flow
 
@@ -158,9 +151,8 @@ This is required for current `DEV_USER_ID = 1` roster and lineup routes to work 
 
 ## Data model improvement roadmap
 
-1. Add uniqueness constraints for roster and lineup rows.
-2. Normalize grade inputs into separate weekly/player metrics tables once real data exists.
-3. Add league/team/roster concepts if the app supports imported fantasy leagues.
-4. Add week/season context to lineup and scoring data.
-5. Decide whether `Lineup` represents only the current saved lineup or historical weekly lineups.
-6. Create explicit Pydantic schemas that match the database model intentionally, not accidentally.
+1. Normalize grade inputs into separate weekly/player metrics tables once real data exists.
+2. Add league/team/roster concepts if the app supports imported fantasy leagues.
+3. Add week/season context to lineup and scoring data.
+4. Decide whether `Lineup` represents only the current saved lineup or historical weekly lineups.
+5. Create explicit Pydantic schemas that match the database model intentionally, not accidentally.
