@@ -7,8 +7,6 @@ The uploaded project includes backend testing dependencies:
 - `pytest`
 - `pytest-asyncio`
 
-No backend or frontend test files are currently present.
-
 Frontend test tooling such as Vitest, Vue Testing Library, or Playwright is not currently configured in `package.json`.
 
 ## Testing priorities
@@ -17,35 +15,11 @@ Because the app is early MVP, tests should focus first on business logic and API
 
 Recommended order:
 
-1. Backend unit tests for the grading engine.
-2. Backend API tests for players, roster, and lineup.
-3. Frontend hook/component tests for the core user workflows.
-4. End-to-end tests once UI routing and styling are more stable.
+1. Backend API tests for players, roster, and lineup.
+2. Frontend hook/component tests for the core user workflows.
+3. End-to-end tests once UI routing and styling are more stable.
 
 ## Backend unit tests
-
-### Highest-value file to test
-
-`backend/app/services/gridiron_grade.py`
-
-This file is ideal for unit tests because the functions are pure and deterministic.
-
-Recommended tests:
-
-- `compute_matchup_grade()` returns `GREEN` at 65+.
-- `compute_matchup_grade()` returns `YELLOW` from 40 to 64.
-- `compute_matchup_grade()` returns `RED` below 40.
-- `compute_opportunity_trend()` returns `GROWING` when recent opportunity is 10% above season average.
-- `compute_opportunity_trend()` returns `SHRINKING` when both rush and receiving are 10% below season average.
-- `compute_gridiron_grade()` never returns above 100.
-- `compute_gridiron_grade()` applies `injury_modifier`.
-- position-specific opportunity weights produce expected relative behavior for QB/RB/WR/TE.
-
-Suggested test file:
-
-```txt
-backend/tests/services/test_gridiron_grade.py
-```
 
 ## Backend API tests
 
@@ -74,15 +48,9 @@ Recommended route tests:
 - `POST /api/v1/lineup/set` replaces the previous lineup.
 - starter flags are stored correctly.
 
-Suggested test folder:
-
-```txt
-backend/tests/api/
-```
-
 ## Database test strategy
 
-For a reliable backend test suite, use a dedicated test database.
+For a reliable backend test suite we have a dedicated database `gridiron_test`.
 
 Recommended approach:
 
@@ -172,8 +140,6 @@ python -m uvicorn app.main:app --reload
 python -m alembic upgrade head
 python -m pytest
 ```
-
-`python -m pytest` will not discover meaningful tests until test files are added.
 
 ## Testing rule for AI agents
 

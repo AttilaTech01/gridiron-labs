@@ -21,6 +21,7 @@ Position weights:
 
 from dataclasses import dataclass
 from typing import TypedDict
+from app.schemas.enums import MatchupGrade, OpportunityTrend
 
 # Weights for rush vs receiving opportunity by position
 OPPORTUNITY_WEIGHTS: dict[str, tuple[float, float]] = {
@@ -78,9 +79,9 @@ ELITE_EXPLOSIVE_RECEIVING_SHARE: dict[str, float] = {
 
 class GridironGradeResult(TypedDict):
     gridiron_grade: int
-    matchup_grade: str
+    matchup_grade: MatchupGrade
     chaos_score: int
-    opportunity_trend: str
+    opportunity_trend: OpportunityTrend
 
 @dataclass
 class GradeInput:
@@ -131,7 +132,7 @@ def compute_opportunity_score(inputs: GradeInput) -> int:
     return min(int(base + trend_bonus), 100)
 
 
-def compute_opportunity_trend(inputs: GradeInput) -> str:
+def compute_opportunity_trend(inputs: GradeInput) -> OpportunityTrend:
     rush_growing = (
         inputs.rush_opportunity_share > inputs.season_rush_opportunity_share * 1.1
     )
@@ -171,7 +172,7 @@ def compute_matchup_score(
     return min(int(score), 100)
 
 
-def compute_matchup_grade(matchup_score: int) -> str:
+def compute_matchup_grade(matchup_score: int) -> MatchupGrade:
     if matchup_score >= 65:
         return "GREEN"
     elif matchup_score >= 40:

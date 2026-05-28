@@ -35,7 +35,6 @@ Read these files first:
 - Auth is not implemented. Roster and lineup routes use `DEV_USER_ID = 1`.
 - The scoring engine lives in `backend/app/services/gridiron_grade.py`.
 - Mock scoring lives in `backend/app/services/mock_grades.py`.
-- There are currently no test files in the project.
 
 ## Coding rules
 
@@ -62,6 +61,7 @@ backend/app/
 ├── models/           # SQLAlchemy ORM models
 ├── schemas/          # Pydantic request/response schemas
 ├── services/         # domain logic and integrations
+├── tests/            # tests
 └── main.py
 ```
 
@@ -192,7 +192,6 @@ When integrating real data:
 - create a translator layer that converts raw provider data into `GradeInput`;
 - keep provider-specific logic outside the scoring formulas;
 - document source assumptions;
-- build tests using fixed fixtures before connecting live data.
 
 ## Documentation update rule
 

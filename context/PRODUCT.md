@@ -81,6 +81,7 @@ The current MVP is the **Start/Sit Optimizer**.
 ### Current MVP backend capabilities
 
 - Player listing with search and position filter.
+- Clerk authentication and per-user auth resolution.
 - Roster add/remove.
 - Lineup get/set.
 - Deterministic mock grading per player.
@@ -91,7 +92,6 @@ The current MVP is the **Start/Sit Optimizer**.
 
 These are planned or implied by the project vision, but are not implemented in the codebase:
 
-- Clerk authentication and per-user auth resolution.
 - Real fantasy league integration.
 - Real weekly matchup data.
 - Real play-by-play and target-share calculations.
@@ -164,6 +164,7 @@ When adding features, prioritize in this order:
 
 The MVP is successful when a user can:
 
+- log in;
 - build a roster;
 - save a lineup;
 - understand which players are safer or riskier;

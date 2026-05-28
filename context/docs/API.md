@@ -37,7 +37,9 @@ Example response:
 
 ### `GET /api/v1/players/`
 
-Returns players excluding kickers.
+Returns players.
+The route currently returns an empty array when both position and search are missing.
+The route also returns an empty array when search is provided with fewer than 3 characters.
 
 Query parameters:
 

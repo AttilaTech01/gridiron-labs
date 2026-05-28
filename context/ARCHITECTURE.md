@@ -31,12 +31,15 @@ gridiron-labs/
 │   │   ├── schemas/            # Currently empty; future Pydantic schemas
 │   │   ├── services/           # Gridiron scoring and mock data logic
 │   │   └── main.py             # FastAPI app entry point
+|   |── tests/                  # Tests
+│   │   ├── api/                # Tests concerning the api
+│   │   ├── services/           # Tests concerning the services
 │   ├── db/                     # Alembic migrations
 │   ├── scripts/                # Seed scripts
 │   └── requirements.txt
+└── context/                    # Context and Docs files
 ├── docker-compose.yml
 ├── README.md
-└── gridiron-labs-context.md
 ```
 
 ## Runtime architecture
@@ -119,7 +122,7 @@ When adding frontend code:
 - PostgreSQL
 - Redis dependency is present and Dockerized, but not yet used in application code
 - `httpx` is used by the seed script
-- `pytest` and `pytest-asyncio` are installed, but no tests are currently present
+- `pytest` and `pytest-asyncio` for testing
 
 ### App entry point
 
@@ -210,10 +213,6 @@ This means every roster and lineup operation is tied to user id 1. Do not build 
 
 Player grades are deterministic but not real. They are useful for UI and data-flow testing, not final product claims.
 
-### Tests are missing
-
-No backend or frontend test files are present in the uploaded project.
-
 ### API schemas are mixed
 
 Current route files return ORM objects directly in some endpoints and use local `TypedDict`/`BaseModel` types in others. The `backend/app/schemas/` folder exists but is empty. Future work should move request/response models into this folder.
@@ -224,12 +223,8 @@ No frontend router is used; `App.vue` currently controls navigation through loca
 
 ## Recommended next architectural improvements
 
-1. Add backend Pydantic schemas for player, roster, lineup, and mutation responses.
-2. Add backend tests for the grading engine.
-3. Add API integration tests for players, roster, and lineup.
-4. Replace direct ORM responses with explicit response schemas.
-5. Add basic frontend components for grade cards, matchup badges, and roster/player rows.
-6. Add Vue Router if the app grows beyond the current single-page MVP.
-7. Implement Clerk auth and replace `DEV_USER_ID` with authenticated user resolution.
-8. Create a real data ingestion boundary that converts football data into `GradeInput`.
-9. Use Redis only when a real caching need exists, such as expensive simulations, live updates, or external API response caching.
+1. Add basic frontend components for grade cards, matchup badges, and roster/player rows.
+2. Add Vue Router if the app grows beyond the current single-page MVP.
+3. Implement Clerk auth and replace `DEV_USER_ID` with authenticated user resolution.
+4. Create a real data ingestion boundary that converts football data into `GradeInput`.
+5. Use Redis only when a real caching need exists, such as expensive simulations, live updates, or external API response caching.
