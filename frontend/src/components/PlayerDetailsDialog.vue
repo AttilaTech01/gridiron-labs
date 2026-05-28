@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :model-value="modelValue" width="640" @update:model-value="$emit('update:modelValue', $event)">
+  <v-dialog v-model="modelValue" width="640" @update:model-value="$emit('update:modelValue', $event)">
     <v-card v-if="player">
       <v-card-title class="text-h6">{{ player.full_name }}</v-card-title>
       <v-card-subtitle class="text-body-2 text-white text-opacity-70">
